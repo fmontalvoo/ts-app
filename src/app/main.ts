@@ -1,19 +1,32 @@
-import { products, addProduct } from './products/product.service';
+import { faker } from '@faker-js/faker';
 
-addProduct({
-    id: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: 'Product 1',
-    price: 7.5,
-    stock: 10,
-    size: 'L',
-    category: {
-        id: 1,
-        name: 'Category 1',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+import { CreateProductDTO, UpdateProductDTO } from './products/product.dto';
+import { addProduct, updateProduct, getProducts, findProduct } from './products/product.service';
+
+for (let i = 0; i < 10; i++) {
+    const product = <CreateProductDTO>{
+        size: faker.helpers.arrayElement(['L', 'M', 'S']),
+        stock: faker.datatype.number({ min: 1, max: 100 }),
+        price: Number(faker.commerce.price()),
+        name: faker.commerce.productName(),
+        // tags: [faker.commerce.productAdjective(), faker.commerce.productMaterial()],
+        tags: faker.random.words(4).split(' '),
+        // description: faker.lorem.paragraph(),
+        description: faker.commerce.productDescription(),
+        image: faker.image.imageUrl(),
+        categoryId: faker.datatype.uuid(),
     }
-});
+    addProduct(product);
+}
+const products = getProducts();
 
-console.log(products);
+const product = products[4];
+const updatedProduct = updateProduct(product.id,
+    <UpdateProductDTO>{
+        name: faker.commerce.productName(),
+        price: Number(faker.commerce.price()),
+        stock: faker.datatype.number({ min: 1, max: 100 }),
+        categoryId: product.category.id,
+    });
+
+console.log(findProduct({ size: 'M' }));
