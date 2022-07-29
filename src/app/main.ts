@@ -1,11 +1,12 @@
 import { faker } from '@faker-js/faker';
 
-import { CreateProductDTO, UpdateProductDTO } from './products/product.dto';
+import { ShirtSizes } from './products/product.model';
+import { CreateProductDTO, FindProductDTO } from './products/product.dto';
 import { addProduct, updateProduct, getProducts, findProduct } from './products/product.service';
 
 for (let i = 0; i < 10; i++) {
-    const product = <CreateProductDTO>{
-        size: faker.helpers.arrayElement(['L', 'M', 'S']),
+    const product = {
+        size: faker.helpers.arrayElement(['L', 'M', 'S']) as ShirtSizes,
         stock: faker.datatype.number({ min: 1, max: 100 }),
         price: Number(faker.commerce.price()),
         name: faker.commerce.productName(),
@@ -22,11 +23,12 @@ const products = getProducts();
 
 const product = products[4];
 const updatedProduct = updateProduct(product.id,
-    <UpdateProductDTO>{
+    {
+        size: 'M',
         name: faker.commerce.productName(),
         price: Number(faker.commerce.price()),
         stock: faker.datatype.number({ min: 1, max: 100 }),
-        categoryId: product.category.id,
+        // categoryId: product.category.id,
     });
 
-console.log(findProduct({ size: 'M' }));
+console.log(findProduct(<FindProductDTO>{ size: 'M' }));
